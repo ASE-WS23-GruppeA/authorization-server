@@ -1,0 +1,16 @@
+server:
+  port: 9999
+  forward-headers-strategy: framework
+
+spring.application.name: auth-server
+
+management:
+  endpoint.health.show-details: always
+  endpoints.jmx.exposure.include: "*"
+
+logging:
+  level:
+    root: debug
+
+---
+spring.config.activate.on-profile: docker
