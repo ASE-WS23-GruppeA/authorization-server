@@ -10,15 +10,15 @@ management:
 
 logging:
   level:
-    root: debug
+    root: info
 
 api:
   auth-server:
-    url: http://localhost:9999
+    base-url: http://localhost:9999
 
 ---
 spring.config.activate.on-profile: docker
 
 api:
   auth-server:
-    url: http://auth-server:9999
+    base-url: http://auth-server:9999

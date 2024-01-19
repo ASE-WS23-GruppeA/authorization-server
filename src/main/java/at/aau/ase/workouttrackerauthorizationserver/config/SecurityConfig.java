@@ -57,8 +57,8 @@ import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
 @Configuration
 public class SecurityConfig {
 
-  @Value("${api.auth-server.url}")
-  private String authServerBaseUrl = "http://localhost:9999";
+  @Value("${api.auth-server.base-url}")
+  private String authServerBaseUrl;
 
   private static KeyPair generateRsaKey() {
     KeyPair keyPair;
