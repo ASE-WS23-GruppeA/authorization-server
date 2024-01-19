@@ -30,6 +30,7 @@ import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -50,8 +51,14 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
 
-@Configuration(proxyBeanMethods = false)
-public class AuthorizationServerConfig {
+/**
+ * Heavily inspired by https://docs.spring.io/spring-authorization-server/reference/getting-started.html
+ */
+@Configuration
+public class SecurityConfig {
+
+  @Value("${api.auth-server.url}")
+  private String authServerBaseUrl = "http://localhost:9999";
 
   private static KeyPair generateRsaKey() {
     KeyPair keyPair;
@@ -137,8 +144,7 @@ public class AuthorizationServerConfig {
   @Bean
   public AuthorizationServerSettings authorizationServerSettings() {
     return AuthorizationServerSettings.builder()
-        // TODO (Timo Tabertshofer, 02.11.2023): Set to http://authorization-server:9999 in docker
-        .issuer("http://localhost:9999")
+        .issuer(authServerBaseUrl)
         .build();
   }
 

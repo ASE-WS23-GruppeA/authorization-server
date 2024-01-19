@@ -12,5 +12,13 @@ logging:
   level:
     root: debug
 
+api:
+  auth-server:
+    url: http://localhost:9999
+
 ---
 spring.config.activate.on-profile: docker
+
+api:
+  auth-server:
+    url: http://auth-server:9999
