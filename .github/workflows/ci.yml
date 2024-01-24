@@ -6,64 +6,21 @@ on:
   pull_request:
     branches: [ "main" ]
 
-permissions:
-  contents: read
-
 jobs:
   build-and-test:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout project sources
-        uses: actions/checkout@v4
-
-      - name: Setup Java JDK
-        uses: actions/setup-java@v4.0.0
-        with:
-          distribution: 'temurin'
-          java-version: '21'
-
-      - name: Validate Gradle wrapper
-        uses: gradle/wrapper-validation-action@v1
-
-      - name: Setup Gradle
-        uses: gradle/gradle-build-action@v2
-        with:
-          gradle-version: '8.5'
-
-      - name: Execute Gradle build
-        run: ./gradlew build
-
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: build_folder
-          path: build/
+    uses: ASE-WS23-GruppeA/workout-tracker/.github/workflows/gradle-build-and-test.yml@main
 
   build-and-push-docker:
     needs: build-and-test
-    runs-on: ubuntu-latest
-    env:
-      DOCKER_IMAGE_TAG: registry.digitalocean.com/do-ase-registry/auth-server
-    steps:
-      - name: Checkout project sources
-        uses: actions/checkout@v4
+    uses: ASE-WS23-GruppeA/workout-tracker/.github/workflows/docker-build-and-push.yml@main
+    with:
+      docker_image_tag: 'registry.digitalocean.com/do-ase-registry/auth-server'
+    secrets:
+      DIGITALOCEAN_ACCESS_TOKEN: "${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}"
 
-      - name: Download build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: build_folder
-          path: build
-
-      - name: Build Docker Image
-        run: docker build . -t $DOCKER_IMAGE_TAG
-
-      - name: GitHub Action for DigitalOcean - doctl
-        uses: digitalocean/action-doctl@v2
-        with:
-          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
-
-      - name: Log in to DigitalOcean Container Registry with short-lived credentials
-        run: doctl registry login --expiry-seconds 600
-
-      - name: Push image to DigitalOcean Container Registry
-        run: docker push $DOCKER_IMAGE_TAG
+  restart-application:
+    needs: build-and-push-docker
+    uses: ASE-WS23-GruppeA/workout-tracker/.github/workflows/docker-compose-restart.yml@main
+    secrets:
+      DROPLET_IP_ADDRESS: "${{ secrets.DROPLET_IP_ADDRESS }}"
+      DROPLET_SSH_KEY: "${{ secrets.DROPLET_SSH_KEY }}"
