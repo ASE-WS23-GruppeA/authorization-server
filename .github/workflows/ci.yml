@@ -10,17 +10,17 @@ jobs:
   build-and-test:
     uses: ASE-WS23-GruppeA/workout-tracker/.github/workflows/gradle-build-and-test.yml@main
 
-  build-and-push-docker:
-    needs: build-and-test
-    uses: ASE-WS23-GruppeA/workout-tracker/.github/workflows/docker-build-and-push.yml@main
-    with:
-      docker_image_tag: 'registry.digitalocean.com/do-ase-registry/auth-server'
-    secrets:
-      DIGITALOCEAN_ACCESS_TOKEN: "${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}"
-
-  restart-application:
-    needs: build-and-push-docker
-    uses: ASE-WS23-GruppeA/workout-tracker/.github/workflows/docker-compose-restart.yml@main
-    secrets:
-      DROPLET_IP_ADDRESS: "${{ secrets.DROPLET_IP_ADDRESS }}"
-      DROPLET_SSH_KEY: "${{ secrets.DROPLET_SSH_KEY }}"
+#  build-and-push-docker:
+#    needs: build-and-test
+#    uses: ASE-WS23-GruppeA/workout-tracker/.github/workflows/docker-build-and-push.yml@main
+#    with:
+#      docker_image_tag: 'registry.digitalocean.com/do-ase-registry/auth-server'
+#    secrets:
+#      DIGITALOCEAN_ACCESS_TOKEN: "${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}"
+#
+#  restart-application:
+#    needs: build-and-push-docker
+#    uses: ASE-WS23-GruppeA/workout-tracker/.github/workflows/docker-compose-restart.yml@main
+#    secrets:
+#      DROPLET_IP_ADDRESS: "${{ secrets.DROPLET_IP_ADDRESS }}"
+#      DROPLET_SSH_KEY: "${{ secrets.DROPLET_SSH_KEY }}"
